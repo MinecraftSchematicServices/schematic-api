@@ -20,7 +20,7 @@ A simple API for generating Minecraft schematics using custom generators.
 Clone the repository:
 
 ```bash
-git clone https://github.com/yourusername/schematic-api.git
+git clone https://github.com/Nano112/schematic-api.git
 ```
 Install required Python packages:
 ```bash
