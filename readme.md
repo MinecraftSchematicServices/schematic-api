@@ -13,8 +13,7 @@ A simple API for generating Minecraft schematics using custom generators.
 1. [Installation](#installation)
 2. [Usage](#usage)
 3. [Endpoints](#endpoints)
-4. [Contributing](#contributing)
-5. [License](#license)
+
 
 ## Installation
 
