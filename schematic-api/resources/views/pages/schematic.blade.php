@@ -72,27 +72,6 @@ new class extends Component {
         $this->schematic = $this->getSchematic();
     }
 
-    //public function updatedBitCount()
-    //{
-    //    $this->bitCount = intval($this->bitCount);
-    //    $this->schematic = $this->getSchematic();
-    //}
-//
-    //public function updatedGlassColor()
-    //{
-    //    $this->schematic = $this->getSchematic();
-    //}
-//
-    //public function updatedMainColor()
-    //{
-    //    $this->schematic = $this->getSchematic();
-    //}
-//
-    //public function updatedMainBlock()
-    //{
-    //    $this->schematic = $this->getSchematic();
-    //}
-
     public function updated($property, $value)
     {
         if ($property == 'bitCount') {
