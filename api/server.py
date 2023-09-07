@@ -27,7 +27,8 @@ def get_generator_docstrings():
             generator_docstrings[name][generator_name] = generator.__doc__
     return generator_docstrings
 
-
+if not os.path.exists("generated_schems"):
+    os.mkdir("generated_schems")
 
 app = Sanic("schematic-api")
     
@@ -66,7 +67,7 @@ async def get_schematic(request):
     print("got args", args)
     schem = generator(**args)    
     name = request.json["schematic_name"] 
-    schem.save("./generated_schems/", name, mcschematic.Version.JE_1_19)
+    schem.save("./generated_schems", name, mcschematic.Version.JE_1_19)
     return await file("./generated_schems/" + name+ ".schem", filename=name+ ".schem", mime_type="application/octet-stream")
     
     
