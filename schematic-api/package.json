@@ -19,6 +19,6 @@
         "@enginehub/schematicwebviewer": "^4.7.0",
         "browserify": "^17.0.0",
         "buffer": "^6.0.3",
-        "Buffer": "^0.0.0"
+        "pako": "^2.1.0"
     }
 }

@@ -1,3 +1,5 @@
+import pako from 'pako';
+
 export async function openDatabase() {
     return new Promise((resolve, reject) => {
         const request = indexedDB.open("minecraftDB", 1);
@@ -59,4 +61,10 @@ export function base64ToUint8Array(base64) {
         bytes[i] = binaryString.charCodeAt(i);
     }
     return bytes;
+}
+
+
+export function base64ToGzip(base64) {
+    console.log(base64);
+    return pako.inflate(base64ToUint8Array(base64), { to: 'string' });
 }
