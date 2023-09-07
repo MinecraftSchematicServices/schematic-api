@@ -15,6 +15,9 @@
                     <x-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
+                    <x-nav-link href="/schematic" :active="request()->routeIs('schematic')">
+                        {{ __('Schematic') }}
+                    </x-nav-link>
                 </div>
             </div>
             @if (Auth::check())

@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Cache;
 
 new class extends Component {
     public $schematic;
-    public $bitCount = 7;
+    public $bitCount = 4;
     public $glassColor = 'lime';
     public $mainColor = 'gray';
     public $mainBlock = 'concrete';
