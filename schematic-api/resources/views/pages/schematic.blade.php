@@ -6,23 +6,56 @@ use Illuminate\Support\Facades\Cache;
 
 new class extends Component {
     public $schematic;
-    public $bitCount = 2;
-    private $data = [
-        'schematic_name' => 'test',
-        'generator_type' => 'decoders',
-        'generator_name' => 'five_hertz_y_decoder',
-        'generator_args' => [
-            'chiseled_bookshelves' => false,
-            'bit_count' => 2,
-        ],
+    public $bitCount = 7;
+    public $glassColor = 'lime';
+    public $mainColor = 'gray';
+    public $mainBlock = 'concrete';
+    public $possibleColors = [
+        'white',
+        'orange',
+        'magenta',
+        'light_blue',
+        'yellow',
+        'lime',
+        'pink',
+        'gray',
+        'light_gray',
+        'cyan',
+        'purple',
+        'blue',
+        'brown',
+        'green',
+        'red',
+        'black',
+    ];
+    public $possibleBlocks = [
+        'concrete',
+        'wool',
+        'terracotta'
     ];
 
-    private function getSchematic($data)
+    private function getData()
     {
-        $cacheKey = 'schematic-' . md5(json_encode($data));
+        return [
+            'schematic_name' => 'test',
+            'generator_type' => 'decoders',
+            'generator_name' => 'five_hertz_y_decoder',
+            'generator_args' => [
+                'chiseled_bookshelves' => false,
+                'bit_count' => intval($this->bitCount),
+                'glass_color' => $this->glassColor,
+                'main_color' => $this->mainColor,
+                'main_block' => $this->mainBlock,
+            ],
+        ];
+    }
+
+    private function getSchematic()
+    {
+        $data = $this->getData();
+        $cacheKey = 'schematic-' .  md5(json_encode($data));
         $cachedSchematic = Cache::remember($cacheKey, 60 * 60 * 24, function () use ($data) {
             $response = Http::post('host.docker.internal:8080/api/get-schematic', $data);
-            //check the http status code
             if ($response->status() != 200) {
                 dd($response->body());
                 throw new \Exception('Failed to generate schematic');
@@ -36,14 +69,36 @@ new class extends Component {
 
     public function mount()
     {
-        $this->schematic = $this->getSchematic($this->data);
+        $this->schematic = $this->getSchematic();
     }
 
-    public function updatedBitCount()
+    //public function updatedBitCount()
+    //{
+    //    $this->bitCount = intval($this->bitCount);
+    //    $this->schematic = $this->getSchematic();
+    //}
+//
+    //public function updatedGlassColor()
+    //{
+    //    $this->schematic = $this->getSchematic();
+    //}
+//
+    //public function updatedMainColor()
+    //{
+    //    $this->schematic = $this->getSchematic();
+    //}
+//
+    //public function updatedMainBlock()
+    //{
+    //    $this->schematic = $this->getSchematic();
+    //}
+
+    public function updated($property, $value)
     {
-        $this->bitCount = intval($this->bitCount);
-        $this->data['generator_args']['bit_count'] = $this->bitCount;
-        $this->schematic = $this->getSchematic($this->data);
+        if ($property == 'bitCount') {
+            $this->bitCount = intval($value);
+        }
+        $this->schematic = $this->getSchematic();
     }
 
 }; ?>
@@ -59,6 +114,29 @@ new class extends Component {
             <p class="text-gray-500 dark:text-gray-400">Schematic</p>
             <input type="number" wire:model.live="bitCount"
                 class="border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+
+                <select wire:model.live="mainColor" class="border boder-{{ $mainColor }}-500 border-opacity-50 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 bg-{{ $mainColor }}-700">
+                    @foreach ($possibleColors as $color)
+                        <option value="{{ $color }}" class="bg-{{ $color }}-500">
+                            {{ $color }}
+                        </option>
+                    @endforeach
+                </select>
+            <select wire:model.live="glassColor" class="border boder-{{ $glassColor }}-500 border-opacity-50 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 bg-{{ $glassColor }}-700">
+                @foreach ($possibleColors as $color)
+                    <option value="{{ $color }}" class="bg-{{ $color }}-500">
+                        {{ $color }}
+                    </option>
+                @endforeach
+            </select>
+            <select wire:model.live="mainBlock" class="border boder-{{ $mainColor }}-500 border-opacity-50 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 bg-{{ $mainColor }}-700">
+                @foreach ($possibleBlocks as $block)
+                    <option value="{{ $block }}" class="bg-{{ $block }}-500">
+                        {{ $block }}
+                    </option>
+                @endforeach
+            </select>
+
             <div class="mt-4 bg-white dark:bg-gray-800 overflow-hidden shadow sm:rounded-lg">
                 <canvas id="schematicRenderer" width="500" height="500" class="!outline-none"></canvas>
 
