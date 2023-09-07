@@ -10,6 +10,12 @@ export default {
         './storage/framework/views/*.php',
         './resources/views/**/*.blade.php',
     ],
+    safelist: [
+        {
+            // all the bg
+            pattern : /^bg-/,
+        }
+    ],
 
     theme: {
         extend: {
