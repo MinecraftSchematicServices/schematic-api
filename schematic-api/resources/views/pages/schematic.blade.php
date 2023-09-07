@@ -13,7 +13,7 @@ new class extends Component {
             'generator_name' => 'five_hertz_y_decoder',
             'generator_args' => [
                 'chiseled_bookshelves' => false,
-                'bit_count' => 4,
+                'bit_count' => 2,
             ]
         ]);
         $bytes = $response->body();
@@ -32,16 +32,6 @@ new class extends Component {
             <p class="text-gray-500 dark:text-gray-400">This is the schematic page.sadfasdf</p>
             <canvas id="schematicRenderer" width="500" height="500"></canvas>
             <script type="module">
-                function base64ToUint8Array(base64) {
-                    const binaryString = atob(base64);
-                    const len = binaryString.length;
-                    const bytes = new Uint8Array(len);
-                    for (let i = 0; i < len; i++) {
-                        bytes[i] = binaryString.charCodeAt(i);
-                    }
-                    return bytes;
-                }
-
                 const schemBase64 = '@json($schematic)';
                 const cleanedSchemBase64 = schemBase64.replace(/[^A-Za-z0-9+/=]/g, "");
                 const schemFile = base64ToUint8Array(cleanedSchemBase64);
@@ -50,10 +40,14 @@ new class extends Component {
                     size: 500,
                     renderArrow: false,
                     renderBars: false,
-                    corsBypassUrl: 'https://cors-anywhere.herokuapp.com/',
+                    corsBypassUrl: '',
+                    getClientJarUrl: async (props) => {
+                        return await getCachedMinecraftJarUrl();
+                    }
                 });
 
             </script>
+
         </div>
     @endvolt
 
