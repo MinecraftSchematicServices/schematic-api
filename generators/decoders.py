@@ -2,7 +2,7 @@ import mcschematic
 
 
 
-def five_hertz_y_decoder_generator(**kwargs):
+def five_hertz_y_decoder(**kwargs):
     """
     Generator by Sloimay (06/09/2023) dd/mm/yyyy
 
