@@ -17,8 +17,18 @@ def get_generators():
                     generators[name][func.__name__] = func
     return generators
 
-
 generators = get_generators()
+
+def get_generator_docstrings():
+    generator_docstrings = {}
+    for name, generator_dict in generators.items():
+        generator_docstrings[name] = {}
+        for generator_name, generator in generator_dict.items():
+            generator_docstrings[name][generator_name] = generator.__doc__
+    return generator_docstrings
+
+
+
 app = Sanic("schematic-api")
     
 def get_schematic_request_validity(request):
@@ -60,7 +70,9 @@ async def get_schematic(request):
     return await file("./generated_schems/" + name+ ".schem", filename=name+ ".schem", mime_type="application/octet-stream")
     
     
-    
+@app.get("/api/get-generators/")
+async def get_generators(request):
+    return json(get_generator_docstrings())
     
     
 #     # name = "test.schem"
