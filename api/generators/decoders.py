@@ -58,7 +58,7 @@ def five_hertz_y_decoder(**kwargs):
                     schem.setBlock((0, y, z+1), "minecraft:chiseled_bookshelf[facing=west]{last_interacted_slot:14}")
                 else:
                     ## Use barrels
-                    schem.setBlock((0, y, z), mcschematic.BlockDataDB.SS_BARREL15)
+                    schem.setBlock((0, y, z+1), mcschematic.BlockDataDB.SS_BARREL15)
 
                 schem.setBlock((0, y, z), "minecraft:comparator[facing=south,mode=subtract,powered=true]{OutputSignal:15}")
 
