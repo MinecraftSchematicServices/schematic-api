@@ -27,3 +27,11 @@ Route::middleware([
     })->name('dashboard');
 });
 
+
+//put the json { "name": "test" } into the cloud storage when you hit this route
+Route::get('/test', function () {
+    $disk = Storage::disk('minio')->put('test.json', '{"name": "test"}');
+    $disk;
+    return 'done';
+});
+

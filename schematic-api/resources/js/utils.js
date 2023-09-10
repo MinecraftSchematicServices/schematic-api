@@ -22,6 +22,7 @@ export async function openDatabase() {
 }
 
 export async function getCachedMinecraftJarUrl() {
+    console.log("Getting cached Minecraft jar URL...");
     const jarURL = 'https://launcher.mojang.com/v1/objects/c0898ec7c6a5a2eaa317770203a1554260699994/client.jar';
     const jarUrlHash = 'c0898ec7c6a5a2eaa317770203a1554260699994';
     const db = await openDatabase();
@@ -32,8 +33,10 @@ export async function getCachedMinecraftJarUrl() {
     return new Promise(async (resolve, reject) => {
         request.onsuccess = function(event) {
             if (request.result) {
+                console.log("Jar found in IndexedDB.");
                 resolve(URL.createObjectURL(request.result));
             } else {
+                console.log("Jar not found in IndexedDB, fetching from Mojang...");
                 const corsBypassUrl = 'https://cors-anywhere.herokuapp.com/';
                 fetch(corsBypassUrl + jarURL).then(response => response.blob()).then(blob => {
                     const addRequest = db.transaction(["jars"], "readwrite").objectStore("jars").add(blob, jarUrlHash);
@@ -51,6 +54,15 @@ export async function getCachedMinecraftJarUrl() {
             reject("Error fetching jar from IndexedDB.");
         };
     });
+}
+
+export function dataURLToBlob(dataURL) {
+    let binary = atob(dataURL.split(',')[1]);
+    let array = [];
+    for (let i = 0; i < binary.length; i++) {
+        array.push(binary.charCodeAt(i));
+    }
+    return new Blob([new Uint8Array(array)], {type: 'image/png'});
 }
 
 export function base64ToUint8Array(base64) {

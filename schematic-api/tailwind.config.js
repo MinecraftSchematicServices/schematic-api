@@ -13,7 +13,7 @@ export default {
     safelist: [
         {
             // all the bg
-            pattern : /^bg-/,
+            pattern: /^bg-/,
         }
     ],
 
@@ -24,6 +24,53 @@ export default {
             },
         },
     },
+    daisyui: {
+        themes: [
+            "light",
+            "dark",
+            "cupcake",
+            "bumblebee",
+            "emerald",
+            "corporate",
+            "synthwave",
+            "retro",
+            "cyberpunk",
+            "valentine",
+            "halloween",
+            "garden",
+            "forest",
+            "aqua",
+            "lofi",
+            "pastel",
+            "fantasy",
+            "wireframe",
+            "black",
+            "luxury",
+            "dracula",
+            "cmyk",
+            "autumn",
+            "business",
+            "acid",
+            "lemonade",
+            "night",
+            "coffee",
+            "winter",
+            {
+                theme_1: {
+                    "primary": "#c94653",
+                    "secondary": "#71e8c6",
+                    "accent": "#23bfd3",
+                    "neutral": "#18242a",
+                    "base-100": "#334a61",
+                    "info": "#3682c9",
+                    "success": "#16bb66",
+                    "warning": "#d3a309",
+                    "error": "#f52435",
 
-    plugins: [forms, typography],
+                },
+            },
+        ],
+    },
+
+    plugins: [forms, typography, require('daisyui')],
 };

@@ -5,11 +5,13 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Cache;
 
 new class extends Component {
+    public $schematicName = 'Schematic';
     public $schematic;
     public $bitCount = 4;
     public $glassColor = 'lime';
     public $mainColor = 'gray';
     public $mainBlock = 'concrete';
+    public $grayCode = false;
     public $possibleColors = ['white', 'orange', 'magenta', 'light_blue', 'yellow', 'lime', 'pink', 'gray', 'light_gray', 'cyan', 'purple', 'blue', 'brown', 'green', 'red', 'black'];
     public $possibleBlocks = ['concrete', 'wool', 'terracotta'];
     public $mcToCssColor = [
@@ -29,7 +31,7 @@ new class extends Component {
         'green' => '#5e7c16',
         'red' => '#c1272d',
         'black' => '#1e1b1b',
-    ]; 
+    ];
     private function getData()
     {
         return [
@@ -42,6 +44,7 @@ new class extends Component {
                 'glass_color' => $this->glassColor,
                 'main_color' => $this->mainColor,
                 'main_block' => $this->mainBlock,
+                'gray_code' => $this->grayCode,
             ],
         ];
     }
@@ -50,7 +53,7 @@ new class extends Component {
     {
         $data = $this->getData();
         $cacheKey = 'schematic-' . md5(json_encode($data));
-        $cachedSchematic = Cache::remember($cacheKey, 60 * 60 * 24, function () use ($data) {
+        $cachedSchematic = Cache::remember($cacheKey, 1, function () use ($data) {
             $response = Http::post('host.docker.internal:8080/api/get-schematic', $data);
             if ($response->status() != 200) {
                 dd($response->body());
@@ -75,6 +78,13 @@ new class extends Component {
         }
         $this->schematic = $this->getSchematic();
     }
+
+    public function updatedSchematicName($value)
+    {
+        $this->schematicName = $value;
+        $this->dispatch('schematicNameUpdated', schematicName: $value);
+    }
+
 }; ?>
 
 
@@ -86,36 +96,52 @@ new class extends Component {
     </x-slot>
     @volt
         <div>
-            <p class="text-gray-500 dark:text-gray-400">Schematic</p>
-            <button id="downloadSchematic" class="mt-4 px-4 py-2 bg-blue-500 text-white rounded">Download Schematic</button>
+            <div class="bg-white dark:bg-gray-100 overflow-hidden shadow sm:rounded-lg p-4">
+                <div class="flex justify-between">
+                    <p class="text-gray-100 dark:text-gray-800">
+                        Schematic Name: <input type="text" wire:model.live="schematicName" value="{{ $schematicName }}"
+                            {{--  make it look like text not an input  --}}
+                            class="border-none bg-transparent text-gray-100 dark:text-gray-800 focus:ring-0 focus:outline-none font-bold cursor-pointer">
+                    </p>
+                    <button id="downloadSchematic" class="mt-4 px-4 py-2 bg-blue-500 text-white rounded">Download
+                        Schematic <i class="fas fa-download"></i>
+                    </button>
+                </div>
+                <div>
+                    <input type="number" wire:model.live="bitCount"
+                        class="border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
 
-            <input type="number" wire:model.live="bitCount"
-                class="border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                    <select wire:model.live="mainColor"
+                        class="border boder-{{ $mainColor }}-500 border-opacity-50 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 bg-{{ $mainColor }}-700">
+                        @foreach ($possibleColors as $color)
+                            <option value="{{ $color }}" style="background-color: {{ $mcToCssColor[$color] }}">
+                                {{ $color }}
+                            </option>
+                        @endforeach
+                    </select>
+                    <select wire:model.live="glassColor"
+                        class="border boder-{{ $glassColor }}-500 border-opacity-50 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 bg-{{ $glassColor }}-700">
+                        @foreach ($possibleColors as $color)
+                            <option value="{{ $color }}" style="background-color: {{ $mcToCssColor[$color] }}">
+                                {{ $color }}
+                            </option>
+                        @endforeach
+                    </select>
+                    <select wire:model.live="mainBlock"
+                        class="border boder-{{ $mainColor }}-500 border-opacity-50 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 bg-{{ $mainColor }}-700">
+                        @foreach ($possibleBlocks as $block)
+                            <option value="{{ $block }}" style="background-color: {{ $mcToCssColor[$mainColor] }}">
+                                {{ $block }}
+                            </option>
+                        @endforeach
+                    </select>
+                    <input type="checkbox" wire:model.live="grayCode"
+                        class="border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                    Gray Code
+                </div>
 
-            <select wire:model.live="mainColor"
-                class="border boder-{{ $mainColor }}-500 border-opacity-50 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 bg-{{ $mainColor }}-700">
-                @foreach ($possibleColors as $color)
-                    <option value="{{ $color }}" style="background-color: {{ $mcToCssColor[$color] }}">
-                        {{ $color }}
-                    </option>
-                @endforeach
-            </select>
-            <select wire:model.live="glassColor"
-                class="border boder-{{ $glassColor }}-500 border-opacity-50 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 bg-{{ $glassColor }}-700">
-                @foreach ($possibleColors as $color)
-                    <option value="{{ $color }}" style="background-color: {{ $mcToCssColor[$color] }}">
-                        {{ $color }}
-                    </option>
-                @endforeach
-            </select>
-            <select wire:model.live="mainBlock"
-                class="border boder-{{ $mainColor }}-500 border-opacity-50 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 bg-{{ $mainColor }}-700">
-                @foreach ($possibleBlocks as $block)
-                    <option value="{{ $block }}" style="background-color: {{ $mcToCssColor[$mainColor] }}">
-                        {{ $block }}
-                    </option>
-                @endforeach
-            </select>
+            </div>
+
 
             <div class="w-full flex justify-center">
                 <canvas id="schematicRenderer" width="1000" height="1000" class="!outline-none"></canvas>
@@ -124,7 +150,7 @@ new class extends Component {
             <script type="module">
                 let currentRender = null;
                 let currentSchematicData = base64ToUint8Array(@json($schematic).replace(/[^A-Za-z0-9+/=]/g, ""));
-
+                let schematicName = @json($schematicName);
                 function render(schematic) {
                     const canvas = document.querySelector('#schematicRenderer');
                     const schemFile = base64ToUint8Array(schematic.replace(/[^A-Za-z0-9+/=]/g, ""));
@@ -137,7 +163,7 @@ new class extends Component {
                     }
 
                     let currentRenderPromise = renderSchematic(canvas, schemFile, {
-                        size:1000,
+                        size: 1000,
                         renderArrow: false,
                         renderBars: false,
                         corsBypassUrl: '',
@@ -155,6 +181,9 @@ new class extends Component {
                         render(event.schematic);
                         currentSchematicData = base64ToUint8Array(event.schematic.replace(/[^A-Za-z0-9+/=]/g, ""));
                     });
+                    @this.on('schematicNameUpdated', (event) => {
+                        schematicName = event.schematicName;
+                    });
                 });
                 document.getElementById('downloadSchematic').addEventListener('click', function() {
                     const blob = new Blob([currentSchematicData], {
@@ -164,7 +193,7 @@ new class extends Component {
                     const a = document.createElement('a');
                     a.style.display = 'none';
                     a.href = url;
-                    a.download = 'schematic.schem'; // You can name the file as you like
+                    a.download = schematicName + '.schem';
 
                     document.body.appendChild(a);
                     a.click();
