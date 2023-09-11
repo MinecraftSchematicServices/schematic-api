@@ -1,9 +1,8 @@
 
 
 
-
-@register_args({
-
+@register_arg({
+    "a": {"bonjour":1}
 })
 def a(**kwargs):
     print(kwargs)
