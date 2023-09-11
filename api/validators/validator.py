@@ -22,11 +22,14 @@ class ValidationError(Exception):
         super().__init__(message)
 
 
-def register_arg(arg_register_data: dict[str, dict]):
+def register_arg(args_register_data: dict[str, dict]):
     def inner(func):
-        def wrapper(args: dict[str, Any]):
+        def wrapper(**kwargs):
 
-            for arg_name, register_data in arg_register_data.items():
+            args: dict[str, Any] = kwargs
+
+            ## Validate each argument
+            for arg_name, register_data in args_register_data.items():
 
                 ## An argument is required when it doesn't have a default value; otherwise optional
                 required: bool = 'default_value' not in register_data
@@ -48,8 +51,8 @@ def register_arg(arg_register_data: dict[str, dict]):
                 if not validationResult.valid:
                     ## Use custom error message if it exists
                     error_message: str = ""
-                    if 'error_message' in arg_register_data:
-                        error_message = arg_register_data['error_message']
+                    if 'error_message' in register_data:
+                        error_message = register_data['error_message']
                     else:
                         error_message = validationResult.error_message
                     raise ValidationError(error_message)
