@@ -1,4 +1,5 @@
 from typing import Any
+import inspect
 
 from api.registering.validators.validator import ValidationResult, Validator, ValidationError
 
@@ -10,16 +11,35 @@ class RegisteringError(Exception):
 
 
 
+class _ArgDatabase:
+    _args = dict[str, dict]
+    _classed_args: _args = {}
+
+    @classmethod
+    def register_args(cls, class_full_name: str, args: _args):
+        if class_full_name in cls._classed_args:
+            raise RegisteringError(f"Arguments for class '{class_full_name}' have already been registered.")
+        cls._classed_args[class_full_name] = args
+
+    @classmethod
+    def get_args(cls, class_full_name: str) -> _args:
+        if class_full_name not in cls._classed_args:
+            raise RegisteringError(f"Class '{class_full_name}' has not been registered yet.")
+        return cls._classed_args[class_full_name]
+
+
+
 def register_args(**args_register_data: dict):
 
-    import inspect
-
-    stack = inspect.stack()
-    the_class = stack[1][0].f_locals
-    the_class_name = the_class['__module__'] + '.' + the_class['__qualname__']
-    #class_module: str = the_class[1][0]
-    print(the_class.__dir__())
-    exec(f"{the_class_name}.bonjour = 1")
+    ## Register the arguments inside the argument database
+    ## TODO: make it work only if the previous frame is a class
+    frame = inspect.currentframe()
+    frame_back = frame.f_back
+    frame_back_locals = frame_back.f_locals
+    class_module: str = frame_back_locals['__module__']
+    class_name: str = frame_back_locals['__qualname__']
+    class_full_name: str = f"{class_module}.{class_name}"
+    _ArgDatabase.register_args(class_full_name, args_register_data)
 
     ## Tests to see if the data inputted in the register is correct.
     for arg_name, register_data in args_register_data.items():
@@ -52,8 +72,8 @@ def register_args(**args_register_data: dict):
                 arg_present: bool = arg_name in args.keys()
                 required: bool = 'default_value' not in register_data
                 optional: bool = not required
-                if required and arg_present:
-                    raise ValueError(f"Argument '{arg_name}' is missing from the arguments dict.")
+                if required and not arg_present:
+                    raise ValueError(f"Argument '{arg_name}' is missing from the arguments.")
                 ## Get the arg value
                 arg_value: Any = None
                 if arg_present:
@@ -75,7 +95,7 @@ def register_args(**args_register_data: dict):
                 ## Put the arg in the new args
                 new_args[arg_name] = arg_value
 
-            func(**new_args)
+            return func(**new_args)
 
         return wrapper
 

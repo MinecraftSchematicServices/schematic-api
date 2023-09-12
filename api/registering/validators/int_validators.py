@@ -49,6 +49,16 @@ class HexValidator(Validator):
 
 
 
+class BoolValidator(Validator):
+
+    def validate(self, arg_name: str, value) -> ValidationResult:
+        if not isinstance(value, bool):
+            return ValidationResult(False,
+                                    f"Argument '{arg_name}' has to be a boolean, but found type '{type(value)}'")
+        return ValidationResult(True)
+
+
+
 class IntSetValidator(Validator):
 
     _int_validator: IntValidator = IntValidator()

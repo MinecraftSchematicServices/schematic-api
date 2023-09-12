@@ -1,138 +1,135 @@
 import mcschematic
+from mcschematic import MCSchematic
 
 from api.generators import generator
 from api.registering.registering import register_args
-from api.registering.validators.int_validators import IntRangeValidator
-
-
-### TOMORROW: REGISTER CLASS INSTEAD OF METHOD
+from api.registering.validators.int_validators import IntRangeValidator, BoolValidator
+from api.registering.validators.string_validators import ColorValidator, ColoredSolidValidator
 
 
 class FiveHertzYDecoder(generator.Generator):
 
-    @classmethod
+    @staticmethod
     @register_args(
-        bonjour={
-            "validator": IntRangeValidator(10, 20),
-            "default_value": 10
+        bit_count={
+            "validator": IntRangeValidator(0, 8),
+            "default_value": 4
+        },
+        gray_code={
+            "validator": BoolValidator(),
+            "default_value": True
+        },
+        chiseled_bookshelves={
+            "validator": BoolValidator(),
+            "default_value": False
+        },
+        glass_color={
+            "validator": ColorValidator(),
+            "default_value": 'white'
+        },
+        solid_color={
+            "validator": ColorValidator(),
+            "default_value": 'white'
+        },
+        solid={
+            "validator": ColoredSolidValidator(),
+            "default_value": 'concrete'
         }
     )
-    def generate(cls, **kwargs):
-        pass
+    def generate(**kwargs) -> MCSchematic:
 
+        ### Args
+        bitCount: int = kwargs.get('bit_count')
+        grayCode: bool = kwargs.get('gray_code')
+        chiseledBookshelves: bool = kwargs.get('chiseled_bookshelves')
+        glassColor: str = kwargs.get('glass_color')
+        mainColor: str = kwargs.get('solid_color')
+        mainBlockType: str = kwargs.get('solid')
 
+        glassBlock: str = f"minecraft:{glassColor}_stained_glass"
+        mainBlock: str = f"minecraft:{mainColor}_{mainBlockType}"
 
+        ### Building
+        schem: mcschematic.MCSchematic = mcschematic.MCSchematic()
 
+        ## Only even Y values as there is a decoder every 2 blocks.
+        maxY: int = 2 ** bitCount * 2
+        for y in range(0, maxY, 2):
 
-def five_hertz_y_decoder(**kwargs):
-    """
-    Generator by Sloimay (06/09/2023) dd/mm/yyyy
+            decoderIndex: int = y // 2
+            decoderValue: int = decoderIndex if not grayCode else decoderIndex ^ (decoderIndex >> 1)
 
-    Args:
-        bit_count (int): The number of bits to use in the decoder.
-        gray_code (bool): Whether to use gray code or not.
-        chiseled_bookshelves (bool): Whether to use chiseled bookshelves or barrels.
-    Returns:
-        mcschematic.MCSchematic: The generated schematic.
-    """
-    
-    ### Args
-    bitCount: int = int(kwargs.get("bit_count", 8))
-    grayCode: bool = kwargs.get("gray_code", True)
-    chiseledBookshelves: bool = kwargs.get("chiseled_bookshelves", True)
-    glassColor: str = kwargs.get("glass_color", "lime")
-    mainColor: str = kwargs.get("main_color", "gray")
-    mainBlockType: str = kwargs.get("main_block", "concrete")
-    glassBlock: str = f"minecraft:{glassColor}_stained_glass"
-    mainBlock: str = f"minecraft:{mainColor}_{mainBlockType}"
+            ## Go through each bit of the current decoder
+            for bitIndex in range(bitCount):
+                z: int = bitIndex * 2
+                bit: int = (decoderValue >> bitIndex) & 0b1
 
-    ### Building
-    schem: mcschematic.MCSchematic = mcschematic.MCSchematic()
-
-    ## Only even Y values as there is a decoder every 2 blocks.
-    maxY: int = 2**bitCount*2
-    for y in range(0, maxY, 2):
-
-        decoderIndex: int = y//2        
-        decoderValue: int = decoderIndex if not grayCode else decoderIndex ^ (decoderIndex >> 1)
-
-        ## Go through each bit of the current decoder
-        for bitIndex in range(bitCount):
-            z: int = bitIndex * 2
-            bit: int = (decoderIndex >> bitIndex) & 0b1
-
-            if bit == 0:
-                schem.setBlock((0, y, z), "minecraft:repeater[delay=2,facing=west,locked=false,powered=false]")
-                schem.setBlock((0, y-1, z), mainBlock)
-                schem.setBlock((1, y-1, z), mainBlock)
-                schem.setBlock((1, y, z), mainBlock)
-                schem.setBlock((-1, y - 1, z), mainBlock)
-                schem.setBlock((-1, y, z), mainBlock)
-                ## Redstone OR line
-                schem.setBlock((2, y-1, z), mainBlock)
-                schem.setBlock((2, y, z), "minecraft:redstone_wire")
-                schem.setBlock((2, y-1, z-1), mainBlock)
-                schem.setBlock((2, y, z-1), "minecraft:redstone_wire")
-
-            elif bit == 1:
-                ## Power source
-                if chiseledBookshelves:
-                    schem.setBlock((0, y, z+1), "minecraft:chiseled_bookshelf[facing=west]{last_interacted_slot:14}")
-                else:
-                    ## Use barrels
-                    schem.setBlock((0, y, z+1), mcschematic.BlockDataDB.SS_BARREL15)
-
-                schem.setBlock((0, y, z), "minecraft:comparator[facing=south,mode=subtract,powered=true]{OutputSignal:15}")
-
-                ## Block in front of comparators if none
-                if schem.getBlockStateAt((0, y, z-1)) == "minecraft:air":
-                    schem.setBlock((0, y, z-1), mainBlock)
-                    schem.setBlock((0, y-1, z-1), mainBlock)
-
-                schem.setBlock((0, y-1, z), mainBlock)
-                schem.setBlock((0, y-1, z+1), mainBlock)
-                schem.setBlock((-1, y-1, z), mainBlock)
-                schem.setBlock((-1, y, z), "minecraft:repeater[delay=1,facing=west,locked=false,powered=false]")
-
-                ## Redstone OR Line
-                schem.setBlock((1, y-1, z-1), mainBlock)
-                schem.setBlock((1, y, z-1), "minecraft:redstone_wire")
-                schem.setBlock((2, y-1, z-1), mainBlock)
-                schem.setBlock((2, y, z-1), "minecraft:redstone_wire")
-                if bitIndex != 0:
-                    schem.setBlock((2, y-1, z-2), mainBlock)
-                    schem.setBlock((2, y, z-2), "minecraft:redstone_wire")
-                if bitIndex != (bitCount-1):
-                    schem.setBlock((2, y-1, z), mainBlock)
+                if bit == 0:
+                    schem.setBlock((0, y, z), "minecraft:repeater[delay=2,facing=west,locked=false,powered=false]")
+                    schem.setBlock((0, y - 1, z), mainBlock)
+                    schem.setBlock((1, y - 1, z), mainBlock)
+                    schem.setBlock((1, y, z), mainBlock)
+                    schem.setBlock((-1, y - 1, z), mainBlock)
+                    schem.setBlock((-1, y, z), mainBlock)
+                    ## Redstone OR line
+                    schem.setBlock((2, y - 1, z), mainBlock)
                     schem.setBlock((2, y, z), "minecraft:redstone_wire")
+                    schem.setBlock((2, y - 1, z - 1), mainBlock)
+                    schem.setBlock((2, y, z - 1), "minecraft:redstone_wire")
 
-            ## Glass towers
-            if y % 7 == 0:
-                ## Tower repetition every 7 decoders
-                schem.setBlock((-2, y, z), "minecraft:redstone_wire")
-                schem.setBlock((-2, y-1, z), glassBlock)
-                schem.setBlock((-3, y+1, z), "minecraft:redstone_wire")
-                schem.setBlock((-3, y, z), mainBlock)
-                schem.setBlock((-4, y-1, z), "minecraft:repeater[delay=1,facing=east,locked=false,powered=false]")
-                schem.setBlock((-4, y-2, z), mainBlock)
-                schem.setBlock((-5, y, z), "minecraft:redstone_wire")
-                schem.setBlock((-5, y-1, z), mainBlock)
-                schem.setBlock((-4, y+1, z), "minecraft:redstone_wire")
-                schem.setBlock((-4, y, z), mainBlock)
-            else:
-                ## No repetition if not
-                schem.setBlock((-2, y, z), "minecraft:redstone_wire")
-                schem.setBlock((-2, y-1, z), glassBlock)
-                schem.setBlock((-3, y+1, z), "minecraft:redstone_wire")
-                schem.setBlock((-3, y, z), glassBlock)
-    
-    ### Retrun
-    return schem
+                elif bit == 1:
+                    ## Power source
+                    if chiseledBookshelves:
+                        schem.setBlock((0, y, z + 1),
+                                       "minecraft:chiseled_bookshelf[facing=west]{last_interacted_slot:14}")
+                    else:
+                        ## Use barrels
+                        schem.setBlock((0, y, z + 1), mcschematic.BlockDataDB.SS_BARREL15)
 
+                    schem.setBlock((0, y, z),
+                                   "minecraft:comparator[facing=south,mode=subtract,powered=true]{OutputSignal:15}")
 
+                    ## Block in front of comparators if none
+                    if schem.getBlockStateAt((0, y, z - 1)) == "minecraft:air":
+                        schem.setBlock((0, y, z - 1), mainBlock)
+                        schem.setBlock((0, y - 1, z - 1), mainBlock)
 
+                    schem.setBlock((0, y - 1, z), mainBlock)
+                    schem.setBlock((0, y - 1, z + 1), mainBlock)
+                    schem.setBlock((-1, y - 1, z), mainBlock)
+                    schem.setBlock((-1, y, z), "minecraft:repeater[delay=1,facing=west,locked=false,powered=false]")
 
-def test(**kwargs):
-    schem: mcschematic.MCSchematic = mcschematic.MCSchematic()
-    schem.setBlock((0, 0, 0), "minecraft:stone")
-    return schem
+                    ## Redstone OR Line
+                    schem.setBlock((1, y - 1, z - 1), mainBlock)
+                    schem.setBlock((1, y, z - 1), "minecraft:redstone_wire")
+                    schem.setBlock((2, y - 1, z - 1), mainBlock)
+                    schem.setBlock((2, y, z - 1), "minecraft:redstone_wire")
+                    if bitIndex != 0:
+                        schem.setBlock((2, y - 1, z - 2), mainBlock)
+                        schem.setBlock((2, y, z - 2), "minecraft:redstone_wire")
+                    if bitIndex != (bitCount - 1):
+                        schem.setBlock((2, y - 1, z), mainBlock)
+                        schem.setBlock((2, y, z), "minecraft:redstone_wire")
+
+                ## Glass towers
+                if y % 7 == 0:
+                    ## Tower repetition every 7 decoders
+                    schem.setBlock((-2, y, z), "minecraft:redstone_wire")
+                    schem.setBlock((-2, y - 1, z), glassBlock)
+                    schem.setBlock((-3, y + 1, z), "minecraft:redstone_wire")
+                    schem.setBlock((-3, y, z), mainBlock)
+                    schem.setBlock((-4, y - 1, z), "minecraft:repeater[delay=1,facing=east,locked=false,powered=false]")
+                    schem.setBlock((-4, y - 2, z), mainBlock)
+                    schem.setBlock((-5, y, z), "minecraft:redstone_wire")
+                    schem.setBlock((-5, y - 1, z), mainBlock)
+                    schem.setBlock((-4, y + 1, z), "minecraft:redstone_wire")
+                    schem.setBlock((-4, y, z), mainBlock)
+                else:
+                    ## No repetition if not
+                    schem.setBlock((-2, y, z), "minecraft:redstone_wire")
+                    schem.setBlock((-2, y - 1, z), glassBlock)
+                    schem.setBlock((-3, y + 1, z), "minecraft:redstone_wire")
+                    schem.setBlock((-3, y, z), glassBlock)
+
+        ### Retrun
+        return schem
