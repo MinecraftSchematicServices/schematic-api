@@ -1,5 +1,5 @@
 
-BLOCK_COLORS: list[str] = [
+MINECRAFT_COLORS: list[str] = [
     "white",
     "orange",
     "magenta",
@@ -16,4 +16,10 @@ BLOCK_COLORS: list[str] = [
     "green",
     "red",
     "black"
+]
+
+COLORED_SOLID_BLOCKS: list[str] = [
+    "concrete",
+    "wool",
+    "terracotta",
 ]
