@@ -1,17 +1,22 @@
+from api.registering.registering import register_args
+from api.registering.validators.array_validators import ArrayValidator
+from api.registering.validators.int_validators import IntRangeValidator
+from api.generators.decoders import FiveHertzYDecoder
 
 
+class A:
 
-@register_arg({
-    "a": {"bonjour":1}
-})
-def a(**kwargs):
-    print(kwargs)
 
+    def met(self):
+        pass
+
+
+def a():
+    pass
 
 
 def main():
-
-    a(bonjour=1)
+    pass
 
 
 

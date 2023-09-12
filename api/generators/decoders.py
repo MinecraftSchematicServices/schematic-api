@@ -1,5 +1,27 @@
 import mcschematic
 
+from api.generators import generator
+from api.registering.registering import register_args
+from api.registering.validators.int_validators import IntRangeValidator
+
+
+### TOMORROW: REGISTER CLASS INSTEAD OF METHOD
+
+
+class FiveHertzYDecoder(generator.Generator):
+
+    @classmethod
+    @register_args(
+        bonjour={
+            "validator": IntRangeValidator(10, 20),
+            "default_value": 10
+        }
+    )
+    def generate(cls, **kwargs):
+        pass
+
+
+
 
 
 def five_hertz_y_decoder(**kwargs):
@@ -29,7 +51,7 @@ def five_hertz_y_decoder(**kwargs):
 
     ## Only even Y values as there is a decoder every 2 blocks.
     maxY: int = 2**bitCount*2
-    for y in range(0, 2**bitCount*2, 2):
+    for y in range(0, maxY, 2):
 
         decoderIndex: int = y//2        
         decoderValue: int = decoderIndex if not grayCode else decoderIndex ^ (decoderIndex >> 1)
