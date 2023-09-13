@@ -5,7 +5,7 @@ import sys
 working_path = str(pathlib.Path(__file__).resolve().parents[1])
 sys.path.append(working_path)
 
-from registering.registering import register_args, get_available_generators
+from registering.registering import register_args, get_available_generators, get_available_generators_json
 from registering.validators.array_validators import ArrayValidator
 from registering.validators.int_validators import IntRangeValidator
 from generators.generator_repository.decoders import FiveHertzYDecoder
@@ -26,9 +26,7 @@ def main():
     # FiveHertzYDecoder.generate(chiseled_bookshelves=True).save(r'C:\Users\Bananas Man\AppData\Roaming\.minecraft\config\worldedit\schematics',
     #                                   'test1', Version.JE_1_19_4)
     print(get_available_generators())
-    print(get_available_generators())
-    print(get_available_generators())
-    print(get_available_generators())
+    print(get_available_generators_json())
 
 
 
