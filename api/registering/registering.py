@@ -18,7 +18,7 @@ class _ArgDatabase:
     @classmethod
     def register_args(cls, class_full_name: str, args: _args):
         if class_full_name in cls._classed_args:
-            raise RegisteringError(f"Arguments for class '{class_full_name}' have already been registered.")
+            return
         cls._classed_args[class_full_name] = args
 
     @classmethod
@@ -109,6 +109,7 @@ def get_available_generators():
     for filename in os.listdir(resolved_path):
         if filename.endswith(".py") and filename != "__init__.py":
             module_name = filename[:-3]
+            print(f"Found generator module '{module_name}'")
             module_path = os.path.join(resolved_path, filename)
             spec = importlib.util.spec_from_file_location(module_name, module_path)
             module = importlib.util.module_from_spec(spec)

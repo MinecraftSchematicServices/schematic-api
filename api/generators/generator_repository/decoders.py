@@ -1,13 +1,13 @@
 import mcschematic
 from mcschematic import MCSchematic
 
-from generators import generator
+from generators.generator import Generator
 from registering.registering import register_args
 from registering.validators.int_validators import IntRangeValidator, BoolValidator
 from registering.validators.string_validators import ColorValidator, ColoredSolidValidator
 
 
-class FiveHertzYDecoder(generator.Generator):
+class FiveHertzYDecoder(Generator):
 
     @staticmethod
     @register_args(
