@@ -26,6 +26,8 @@ def main():
     # FiveHertzYDecoder.generate(chiseled_bookshelves=True).save(r'C:\Users\Bananas Man\AppData\Roaming\.minecraft\config\worldedit\schematics',
     #                                   'test1', Version.JE_1_19_4)
     print(get_available_generators())
+    print(get_available_generators())
+    print(get_available_generators())
     print(get_available_generators_json())
 
 
