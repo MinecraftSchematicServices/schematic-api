@@ -4,7 +4,7 @@ import inspect
 
 from mcschematic import MCSchematic
 
-from api.registering.registering import _ArgDatabase
+from registering.registering import _ArgDatabase
 
 class Generator:
 

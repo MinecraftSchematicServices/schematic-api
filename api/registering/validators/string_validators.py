@@ -1,5 +1,6 @@
-from api.resources import constants
-from api.registering.validators.validator import Validator, ValidationResult
+from resources import constants
+from registering.validators.validator import Validator, ValidationResult
+from typing import Any
 
 
 
@@ -9,6 +10,11 @@ class StringValidator(Validator):
             return ValidationResult(False,
                                     f"Argument '{arg_name}' must be a string, but found type '{type(value)}'.")
         return ValidationResult(True)
+    
+    def serialize(self) -> dict[str, Any]:
+        return {
+            "type": "string"
+        }
 
 
 
@@ -25,6 +31,11 @@ class ColorValidator(Validator):
             return ValidationResult(False,
                                     f"Argument '{arg_name}' has to be one of these colors: {constants.MINECRAFT_COLORS}, but found '{value}'.")
         return ValidationResult(True)
+    
+    def serialize(self) -> dict[str, Any]:
+        return {
+            "type": "color"
+        }
 
 
 
@@ -41,6 +52,11 @@ class ColoredSolidValidator(Validator):
             return ValidationResult(False,
                                     f"Argument '{arg_name}' has to be one of these colored solids: {constants.COLORED_SOLID_BLOCKS}, but found '{value}'.")
         return ValidationResult(True)
+    
+    def serialize(self) -> dict[str, Any]:
+        return {
+            "type": "colored_solid"
+        }
 
 
 

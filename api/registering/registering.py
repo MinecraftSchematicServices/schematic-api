@@ -1,9 +1,9 @@
 from typing import Any
 import inspect
-
-from api.registering.validators.validator import ValidationResult, Validator, ValidationError
-
-
+import os
+from registering.validators.validator import ValidationResult, Validator, ValidationError
+import sys
+import importlib.util
 
 class RegisteringError(Exception):
     def __init__(self, message: str):
@@ -100,3 +100,35 @@ def register_args(**args_register_data: dict):
         return wrapper
 
     return inner
+
+def get_available_generators():
+    generator_classes = {}
+    relative_path = "../generators/generator_repository"
+    import_path = os.path.join(os.path.dirname(__file__), relative_path)
+    resolved_path = os.path.realpath(import_path)
+    for filename in os.listdir(resolved_path):
+        if filename.endswith(".py") and filename != "__init__.py":
+            module_name = filename[:-3]
+            module_path = os.path.join(resolved_path, filename)
+            spec = importlib.util.spec_from_file_location(module_name, module_path)
+            module = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(module)
+            for name, obj in inspect.getmembers(module):
+                if inspect.isclass(obj) and obj.__module__ == module_name:
+                    generator_classes[name] = {}
+                    doctsring = obj.__doc__
+                    if doctsring is not None:
+                        generator_classes[name]["docstring"] = doctsring
+                    args = _ArgDatabase.get_args(f"{obj.__module__}.{obj.__qualname__}")
+                    # serialize the validators
+                    serialized_args = {}
+                    for arg_name, arg_data in args.items():
+                        serialized_args[arg_name] = {}
+                        for key, value in arg_data.items():
+                            if key == "validator":
+                                serialized_args[arg_name][key] = value.serialize()
+                            else:
+                                serialized_args[arg_name][key] = value
+                    generator_classes[name]["args"] = serialized_args
+                    
+    return generator_classes

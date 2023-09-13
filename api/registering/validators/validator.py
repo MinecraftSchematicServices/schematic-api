@@ -14,6 +14,10 @@ class Validator:
     @abc.abstractmethod
     def validate(self, arg_name: str, value) -> ValidationResult:
         pass
+    
+    @abc.abstractmethod
+    def serialize(self) -> dict[str, Any]:
+        pass
 
 
 

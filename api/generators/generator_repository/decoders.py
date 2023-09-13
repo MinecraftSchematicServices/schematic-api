@@ -1,10 +1,10 @@
 import mcschematic
 from mcschematic import MCSchematic
 
-from api.generators import generator
-from api.registering.registering import register_args
-from api.registering.validators.int_validators import IntRangeValidator, BoolValidator
-from api.registering.validators.string_validators import ColorValidator, ColoredSolidValidator
+from generators import generator
+from registering.registering import register_args
+from registering.validators.int_validators import IntRangeValidator, BoolValidator
+from registering.validators.string_validators import ColorValidator, ColoredSolidValidator
 
 
 class FiveHertzYDecoder(generator.Generator):

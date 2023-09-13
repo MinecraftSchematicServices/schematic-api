@@ -1,5 +1,6 @@
-from api.registering.validators.int_validators import IntValidator
-from api.registering.validators.validator import Validator, ValidationResult, ValidationError
+from registering.validators.int_validators import IntValidator
+from registering.validators.validator import Validator, ValidationResult, ValidationError
+from typing import Any
 
 
 class ArrayValidator(Validator):
@@ -21,3 +22,9 @@ class ArrayValidator(Validator):
                 return item_validation
 
         return ValidationResult(True)
+    
+    def serialize(self) -> dict[str, Any]:
+        return {
+            "type": "array",
+            "item_validator": self._per_item_validator.serialize()
+        }

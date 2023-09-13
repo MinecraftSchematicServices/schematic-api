@@ -1,9 +1,15 @@
 from mcschematic import Version
+import os
+import pathlib
+import sys
+# set the import path to the root of the project
+working_path = str(pathlib.Path(__file__).resolve().parents[2])
+sys.path.append(working_path)
 
-from api.registering.registering import register_args
-from api.registering.validators.array_validators import ArrayValidator
-from api.registering.validators.int_validators import IntRangeValidator
-from api.generators.decoders import FiveHertzYDecoder
+from registering.registering import register_args, get_available_generators
+from registering.validators.array_validators import ArrayValidator
+from registering.validators.int_validators import IntRangeValidator
+from generators.generator_repository.decoders import FiveHertzYDecoder
 
 
 class A:
@@ -18,8 +24,9 @@ def a():
 
 
 def main():
-    FiveHertzYDecoder.generate(chiseled_bookshelves=True).save(r'C:\Users\Bananas Man\AppData\Roaming\.minecraft\config\worldedit\schematics',
-                                      'test1', Version.JE_1_19_4)
+    # FiveHertzYDecoder.generate(chiseled_bookshelves=True).save(r'C:\Users\Bananas Man\AppData\Roaming\.minecraft\config\worldedit\schematics',
+    #                                   'test1', Version.JE_1_19_4)
+    print(get_available_generators())
 
 
 
