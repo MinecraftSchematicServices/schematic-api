@@ -2,6 +2,9 @@ from mcschematic import Version
 import os
 import pathlib
 import sys
+
+from generators.generator import Generator
+
 working_path = str(pathlib.Path(__file__).resolve().parents[1])
 sys.path.append(working_path)
 
@@ -23,12 +26,9 @@ def a():
 
 
 def main():
-    # FiveHertzYDecoder.generate(chiseled_bookshelves=True).save(r'C:\Users\Bananas Man\AppData\Roaming\.minecraft\config\worldedit\schematics',
-    #                                   'test1', Version.JE_1_19_4)
-    print(get_available_generators())
-    print(get_available_generators())
-    print(get_available_generators())
-    print(get_available_generators_json())
+    FiveHertzYDecoder.generate(chiseled_bookshelves=False).save(r'C:\Users\Bananas Man\AppData\Roaming\.minecraft\config\worldedit\schematics',
+                                      'test1', Version.JE_1_19_4)
+    FiveHertzYDecoder.get_metadata()
 
 
 
