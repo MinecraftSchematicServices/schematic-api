@@ -50,6 +50,7 @@ def validate_request(request):
 async def get_schematic(request):
     valid, errors = validate_request(request)
     if not valid:
+        print(errors)
         return json({"errors": errors}, status=400)
     args = request.json.get("generator_args", {})
     generator = generators[request.json["generator_name"]]
