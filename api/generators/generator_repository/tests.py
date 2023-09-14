@@ -17,7 +17,8 @@ class Test1(Generator):
     @staticmethod
     @register_args(
         bool_list={
-            "validator": ArrayValidator(BoolValidator())
+            "validator": ArrayValidator(BoolValidator(), min_length=1),
+            "default_value": [True, False, True, False, True, False, True, False]
         },
         block_type={
             "validator": ColoredSolidValidator(),
@@ -153,7 +154,7 @@ class MandelbrotSet(Generator):
         },
         block_palette={
             "validator": ArrayValidator(ColoredSolidBlockValidator(), min_length=1),
-            "default_value": ["minecraft:black_concrete", "minecraft:white_concrete"]
+            "default_value": ["minecraft:red_concrete", "minecraft:orange_concrete", "minecraft:yellow_concrete", "minecraft:lime_concrete", "minecraft:green_concrete", "minecraft:cyan_concrete", "minecraft:blue_concrete", "minecraft:purple_concrete"]
         },
         width={
             "validator": IntRangeValidator(1, 256),
