@@ -2,7 +2,6 @@ import mcschematic
 from mcschematic import MCSchematic
 
 from generators.generator import Generator
-from generators.generator_utils import decompile_args
 from registering.registering import register_args
 from registering.validators.int_validators import IntRangeValidator, BoolValidator
 from registering.validators.string_validators import ColorValidator, ColoredSolidValidator
