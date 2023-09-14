@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from sanic import Sanic
 from sanic.response import file, json
 from registering.registering import get_available_generators, generators_to_json
+import traceback
 
 import mcschematic
 
@@ -55,6 +56,8 @@ async def get_schematic(request):
     try:
         schem = generator.generate(**args)
     except Exception as e:
+        print(e)
+        traceback.print_exc()
         return json({"error": str(e)}, status=400)
     name = request.json["schematic_name"]
     schem.save("./generated_schems", name, mcschematic.Version.JE_1_19)

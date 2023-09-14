@@ -24,7 +24,7 @@ class FiveHertzYDecoder(Generator):
     @staticmethod
     @register_args(
         bit_count={
-            "validator": IntRangeValidator(0, 8),
+            "validator": IntRangeValidator(1, 8),
             "default_value": 4,
         },
         gray_code={
