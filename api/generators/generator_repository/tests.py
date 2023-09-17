@@ -1,9 +1,7 @@
 import random
 import mcschematic
 import math
-from opensimplex import OpenSimplex
 import numpy as np
-import noise
 from math import floor
 
 
@@ -341,54 +339,5 @@ class CircleGenerator(Generator):
         return schem
     
     
-
-class SimplexNoise3D(Generator):
-
-    @staticmethod
-    @register_args(
-        x_size={
-            "validator": IntRangeValidator(1, 256),
-            "default_value": 32
-        },
-        y_size={
-            "validator": IntRangeValidator(1, 256),
-            "default_value": 32
-        },
-        z_size={
-            "validator": IntRangeValidator(1, 256),
-            "default_value": 32
-        },
-        scale={
-            "validator": FloatRangeValidator(0, 1, step=0.01),
-            "default_value": 0.01
-        },
-        block={
-            "validator": ColoredSolidBlockValidator(),
-            "default_value": "minecraft:white_concrete"
-        },
-        iso_level={
-            "validator": FloatRangeValidator(-1, 1, step=0.01),
-            "default_value": 0
-        },
-    )
-    def generate(**kwargs) -> MCSchematic:
-        x_size: int = kwargs.get('x_size')
-        y_size: int = kwargs.get('y_size')
-        z_size: int = kwargs.get('z_size')
-        scale: float = kwargs.get('scale')
-        block: str = kwargs.get('block')
-        iso_level: float = kwargs.get('iso_level')
-        
-        
-        schem: mcschematic.MCSchematic = mcschematic.MCSchematic()
-        
-        for x in range(x_size):
-            for y in range(y_size):
-                for z in range(z_size):
-                    noise_val = noise.snoise3(x * scale, y * scale, z * scale)
-                    if noise_val >= iso_level:
-                        schem.setBlock((x, y, z), block)
-                    
-        return schem
     
     

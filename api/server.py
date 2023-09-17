@@ -80,4 +80,3 @@ async def get_generators(request):
 #     # schem.setBlock((0, -1, 0), "minecraft:stone")
 #     # schem.save(".", name, mcschematic.Version.JE_1_19)
 #     # return await file(name, filename=name, mime_type="application/octet-stream")
-
