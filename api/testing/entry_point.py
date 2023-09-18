@@ -4,6 +4,7 @@ import pathlib
 import sys
 
 from generators.generator import Generator
+from generators.generator_repository.adders import FiveHertzAdder
 
 working_path = str(pathlib.Path(__file__).resolve().parents[1])
 sys.path.append(working_path)
@@ -26,9 +27,13 @@ def a():
 
 
 def main():
-    FiveHertzYDecoder.generate(chiseled_bookshelves=False).save(r'C:\Users\Bananas Man\AppData\Roaming\.minecraft\config\worldedit\schematics',
+    #FiveHertzYDecoder.generate(chiseled_bookshelves=False).save(r'C:\Users\Bananas Man\AppData\Roaming\.minecraft\config\worldedit\schematics',
+    #                                  'test1', Version.JE_1_19_4)
+    #FiveHertzYDecoder.get_metadata()
+    FiveHertzAdder.generate(bit_count=8).save(
+        r'C:\Users\Bananas Man\AppData\Roaming\.minecraft\config\worldedit\schematics',
                                       'test1', Version.JE_1_19_4)
-    FiveHertzYDecoder.get_metadata()
+
 
 
 
