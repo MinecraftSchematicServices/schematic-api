@@ -3,6 +3,8 @@ from dataclasses import dataclass
 
 from sanic import Sanic
 from sanic.response import file, json
+from sanic_ext import Extend
+
 from registering.registering import get_available_generators, generators_to_json
 import traceback
 
@@ -13,6 +15,9 @@ if not os.path.exists("generated_schems"):
     os.mkdir("generated_schems")
 
 app = Sanic("schematic-api")
+app.config.CORS_ORIGINS = "*"
+
+Extend(app)
 
 generators = get_available_generators()
 
@@ -80,3 +85,5 @@ async def get_generators(request):
 #     # schem.setBlock((0, -1, 0), "minecraft:stone")
 #     # schem.save(".", name, mcschematic.Version.JE_1_19)
 #     # return await file(name, filename=name, mime_type="application/octet-stream")
+
+
