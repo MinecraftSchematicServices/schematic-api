@@ -340,4 +340,56 @@ class CircleGenerator(Generator):
     
     
     
-    
+class HyperboloidGenerator(Generator):
+
+    @staticmethod
+    @register_args(
+        main_block={
+            "validator": ColoredSolidBlockValidator(),
+            "default_value": 'minecraft:white_concrete'
+        },
+        width={
+            "validator": IntRangeValidator(1, 256),
+            "default_value": 128
+        },
+        height={
+            "validator": IntRangeValidator(1, 256),
+            "default_value": 128
+        },
+        depth={
+            "validator": IntRangeValidator(1, 256),
+            "default_value": 128
+        },
+        a={
+            "validator": FloatRangeValidator(0.1, 50),
+            "default_value": 10.0
+        },
+        b={
+            "validator": FloatRangeValidator(0.1, 50),
+            "default_value": 10.0
+        },
+        c={
+            "validator": FloatRangeValidator(0.1, 50),
+            "default_value": 10.0
+        }
+    )
+    def generate(**kwargs) -> MCSchematic:
+        main_block: str = kwargs.get('main_block')
+        air_block: str = "minecraft:air"
+        width: int = kwargs.get('width')
+        height: int = kwargs.get('height')
+        depth: int = kwargs.get('depth')
+        a: float = kwargs.get('a')
+        b: float = kwargs.get('b')
+        c: float = kwargs.get('c')
+        schem: mcschematic.MCSchematic = mcschematic.MCSchematic()
+
+        for x in range(-width//2, width//2):
+            for y in range(-height//2, height//2):
+                for z in range(-depth//2, depth//2):
+                    if (x**2/a**2 + y**2/b**2 - z**2/c**2) <= 1:
+                        schem.setBlock((x + width//2, y + height//2, z + depth//2), main_block)
+                    else:
+                        schem.setBlock((x + width//2, y + height//2, z + depth//2), air_block)
+
+        return schem
