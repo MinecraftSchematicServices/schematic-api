@@ -158,15 +158,15 @@ class MandelbrotSet(Generator):
         },
         width={
             "validator": IntRangeValidator(1, 256),
-            "default_value": 128
+            "default_value": 64
         },
         height={
             "validator": IntRangeValidator(1, 256),
-            "default_value": 128
+            "default_value": 64
         },
         iterations={
             "validator": IntRangeValidator(1, 2000),
-            "default_value": 1000
+            "default_value": 100
         },
         min_real={
             "validator": FloatRangeValidator(-4, 4),
@@ -232,15 +232,15 @@ class JuliaSet(Generator):
         },
         width={
             "validator": IntRangeValidator(1, 256),
-            "default_value": 128
+            "default_value": 64
         },
         height={
             "validator": IntRangeValidator(1, 256),
-            "default_value": 128
+            "default_value": 64
         },
         iterations={
             "validator": IntRangeValidator(1, 2000),
-            "default_value": 1000
+            "default_value": 100
         },
         real_part={
             "validator": FloatRangeValidator(-2, 2),
@@ -350,15 +350,15 @@ class HyperboloidGenerator(Generator):
         },
         width={
             "validator": IntRangeValidator(1, 256),
-            "default_value": 128
+            "default_value": 64
         },
         height={
             "validator": IntRangeValidator(1, 256),
-            "default_value": 128
+            "default_value": 64
         },
         depth={
             "validator": IntRangeValidator(1, 256),
-            "default_value": 128
+            "default_value": 64
         },
         a={
             "validator": FloatRangeValidator(0.1, 50),
