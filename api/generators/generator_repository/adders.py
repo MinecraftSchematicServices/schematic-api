@@ -5,8 +5,10 @@ from generators.generator import Generator
 from registering.registering import register_args
 from registering.validators.int_validators import IntRangeValidator
 
+from generators.generator_utils import ivec_add, translate_y, up
 
-class FiveHertzAdder(Generator):
+
+class FiveHertzAdder:  # not done
 
     _metadata = {
         "category": "redstone",
@@ -49,7 +51,7 @@ class FiveHertzAdder(Generator):
 
         def mounted(pos: tuple[int, int, int], block_under: str, block_above: str):
             schem.setBlock(pos, block_under)
-            schem.setBlock((pos[0], pos[1] + 1, pos[2]), block_above)
+            schem.setBlock(up(pos), block_above)
 
 
         def first_xor(bit_index: int, y: int):
@@ -71,6 +73,21 @@ class FiveHertzAdder(Generator):
 
         for bit_index in range(bit_count):
             y: int = bit_index * 2
+            origin = (0, y, 0)
+
+
+
+            origin = (origin[0], origin[1] + 1, origin[2])
+
+            ivec_add(origin, (0, 1, 0))
+
+            translate_y(origin, 1)
+
+            up(origin, 1)
+
+            up(origin)
+
+
 
             first_xor(bit_index, y)
 

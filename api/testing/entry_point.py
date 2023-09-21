@@ -14,6 +14,8 @@ from registering.validators.array_validators import ArrayValidator
 from registering.validators.int_validators import IntRangeValidator
 from generators.generator_repository.decoders import FiveHertzYDecoder
 
+from generators.generator_utils import ivec_add
+
 
 class A:
 
