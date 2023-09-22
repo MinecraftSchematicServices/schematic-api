@@ -1,3 +1,4 @@
+import copy
 from typing import Any
 import inspect
 import os
@@ -82,7 +83,9 @@ def register_args(**args_register_data: dict):
                     arg_value = args[arg_name]
                 else:
                     if optional:
-                        arg_value = register_data['default_value']
+                        ## Make sure to pass in a deep copy of the default values otherwise you can modify it
+                        ## at runtime in the #generate() method
+                        arg_value = copy.deepcopy(register_data['default_value'])
 
                 ## Validate the argument
                 if 'validator' not in register_data:
