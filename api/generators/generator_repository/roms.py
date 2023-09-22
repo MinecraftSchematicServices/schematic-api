@@ -159,15 +159,20 @@ class BasicROMGenerator(Generator):
 
             ## Place block
             data_point = data_point.lower()
-            data_as_int: int = int(data_point, base)
+            data_character_to_int_failed: bool = False
+            try:
+                data_as_int: int = int(data_point, base)
+            except:
+                data_character_to_int_failed = True
 
             block: str = mcschematic.BlockDataDB.BARREL.fromSS(data_as_int)
-            if solid_block_on_0 and data_as_int == 0:
-                block = solid_block
-            if redstone_block_on_15 and data_as_int == 15:
-                block = 'minecraft:redstone_block'
-            if data_point not in '0123456789abcdef':
+            if data_character_to_int_failed:
                 block = 'minecraft:sponge'
+            else:
+                if solid_block_on_0 and data_as_int == 0:
+                    block = solid_block
+                if redstone_block_on_15 and data_as_int == 15:
+                    block = 'minecraft:redstone_block'
 
             schem.setBlock((data_x, data_y, data_z), block)
 

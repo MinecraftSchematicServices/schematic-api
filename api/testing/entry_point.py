@@ -37,7 +37,7 @@ def main():
     #    r'C:\Users\Bananas Man\AppData\Roaming\.minecraft\config\worldedit\schematics',
     #                                  'test1', Version.JE_1_19_4)
 
-    BasicROMGenerator.generate(data='0123456789ABCDEF8721364778635867923576862467857862678456784'*100,
+    BasicROMGenerator.generate(data='0123456789ABCDEF8Z721364778635867923576862467857862678456784'*100,
                                base=16,
                                bit_width=4,
                                x_offsets=[2,],
