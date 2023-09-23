@@ -95,7 +95,11 @@ class BasicROMGenerator(Generator):
     def generate(**gargs) -> MCSchematic:
 
         ## Arg getting
+        
         data: str = gargs['data']
+        # Cleanup data
+        data.replace(' ', '')
+
         base: int = gargs['base']
 
         bit_width: int = gargs['bit_width']
