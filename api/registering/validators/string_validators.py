@@ -81,5 +81,5 @@ class StringSetValidator(Validator):
     def serialize(self) -> dict[str, Any]:
         return {
             "type": "string_set",
-            "strings": list(StringSetValidator.valid_strings),
+            "strings": list(self.valid_strings),
         }
