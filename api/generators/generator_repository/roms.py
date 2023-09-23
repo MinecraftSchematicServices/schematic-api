@@ -14,9 +14,9 @@ from registering.validators.string_validators import StringValidator, StringSetV
 
 ## The stagger intersection functions, automatically updated if we add an entry in this dict
 _stagger_intersection_functions: dict[str, Callable] = {
+    'xor': lambda a, b: a != b,
     'min': min,
     'max': max,
-    'xor': lambda a, b: a != b,
 }
 
 
