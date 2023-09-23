@@ -102,7 +102,7 @@ class BasicROMGenerator(Generator):
 
         data: str = gargs['data']
         # Cleanup data
-        data.replace(' ', '')
+        data = data.replace(' ', '')
 
         base: int = gargs['base']
 
