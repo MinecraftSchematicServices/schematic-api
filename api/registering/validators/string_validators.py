@@ -77,3 +77,9 @@ class StringSetValidator(Validator):
             return ValidationResult(False,
                                     f"Argument '{arg_name}' has to be one of these strings: {list(self.valid_strings)} but found '{value}'.")
         return ValidationResult(True)
+    
+    def serialize(self) -> dict[str, Any]:
+        return {
+            "type": "string_set",
+            "strings": list(StringSetValidator.valid_strings),
+        }
