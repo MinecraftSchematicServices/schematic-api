@@ -75,6 +75,10 @@ class BasicROMGenerator(Generator):
             'default_value': 'none',
         },
 
+        invert_word={
+            'validator': BoolValidator(),
+            'default_value': True
+        },
         solid_block_on_0={
             'validator': BoolValidator(),
             'default_value': True
@@ -95,7 +99,7 @@ class BasicROMGenerator(Generator):
     def generate(**gargs) -> MCSchematic:
 
         ## Arg getting
-        
+
         data: str = gargs['data']
         # Cleanup data
         data.replace(' ', '')
@@ -113,6 +117,7 @@ class BasicROMGenerator(Generator):
         z_offsets: list[int] = gargs['z_offsets']
         z_stagger: str = gargs['z_stagger']
 
+        invert_word: bool = gargs['invert_word']
         solid_block_on_0: bool = gargs['solid_block_on_0']
         solid_block: str = gargs['solid_block']
         redstone_block_on_15: bool = gargs['redstone_block_on_15']
@@ -159,7 +164,7 @@ class BasicROMGenerator(Generator):
             stagger: int = stagger_intersection_function(x_staggered, z_staggered)
             full_y_offset_counts: int = data_my // len(y_offsets)
             partial_y_offset_sum: int = sum(y_offsets[:data_my % len(y_offsets)])
-            data_y: int = (full_y_offset_counts * y_offsets_sum + partial_y_offset_sum) + stagger
+            data_y: int = (-1 if invert_word else 1) * (full_y_offset_counts * y_offsets_sum + partial_y_offset_sum) + stagger
 
             ## Place block
             data_point = data_point.lower()
